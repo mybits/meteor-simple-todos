@@ -9,7 +9,7 @@ if (Meteor.isClient) {
     tasks: function () {
       if (Session.get("hideCompleted")) {
         // If hide completed is checked, filter tasks
-        return Tasks.find({checked: {$ne: true}}, {sort: {createdAt: -1}});
+        return Tasks.find({ checked: {$ne: true} }, {sort: {createdAt: -1}});
       } else {
         // Otherwise, return all of the tasks
         return Tasks.find({}, {sort: {createdAt: -1}});
@@ -21,7 +21,7 @@ if (Meteor.isClient) {
     },
 
     incompleteCount: function () {
-      return Tasks.find({checked: {$ne: true}}).count();
+      return Tasks.find({ checked: {$ne: true} }).count();
     }
   });
 
@@ -52,6 +52,15 @@ if (Meteor.isClient) {
     },
     "click .delete": function () {
      Meteor.call("deleteTask", this._id);
+    },
+    "click .toggle-private": function () {
+      Meteor.call("setPrivate", this._id, !  this.private);
+    }
+  });
+
+  Template.task.helpers({
+    isOwner: function () {
+      return this.owner == Meteor.userId();
     }
   });
 
@@ -61,6 +70,7 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
+
   addTask: function (text) {
     if (! Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
@@ -73,16 +83,33 @@ Meteor.methods({
       username: Meteor.user().username
     });
   },
+
   deleteTask: function (taskId) {
     Tasks.remove(taskId);
   },
+
   setChecked: function (taskId, setChecked) {
-    Tasks.update(taskId, {$set: {checked: setChecked} });
+    Tasks.update(taskId, { $set: { checked: setChecked } });
+  },
+
+  setPrivate: function (taskId, setToPrivate) {
+    var task = Tasks.findOne(taskId);
+
+    if (task.owner !== Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    Tasks.update(taskId, { $set: { private: setToPrivate } });
   }
+
 });
 
 if (Meteor.isServer) {
   Meteor.publish("tasks", function () {
-    return Tasks.find();
+    return Tasks.find({
+      $or: [
+        { private: {$ne: true} },
+        { owner: this.userId }
+      ]
+    });
   });
 }
