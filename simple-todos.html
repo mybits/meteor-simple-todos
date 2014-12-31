@@ -30,13 +30,13 @@
 </body>
 
 <template name="task">
-  <li class="{{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
+  <li class=" well {{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
     <button class="delete">&times;</button>
 
     <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
 
     {{#if isOwner}}
-      <button class="toggle-private">
+      <button class="btn btn-primary btn-raised btn-sm toggle-private">
         {{#if private}}
           Private
         {{else}}
