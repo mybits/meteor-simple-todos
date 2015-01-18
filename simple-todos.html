@@ -5,14 +5,24 @@
 <body>
   <div class="container">
     <header>
-      <h1>Todo List ({{incompleteCount}})</h1>
-
-      <label class="hide-completed">
-        <input type="checkbox" checked="{{hideCompleted}}" />
-        Hide Completed Tasks
-      </label>
-
-      {{> loginButtons}}
+       <div class="panel panel-primary fade-ins">
+          <div class="panel-heading">
+            <div class="panel-title">
+                <h1>Todo List <span class="badge title-badge"> {{incompleteCount}} </span></h1>
+            </div>
+            <div class ="btn btn-normal login-btns">
+                {{> loginButtons}}
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="checkbox checkbox-primary">
+              <label class="hide-completed">
+                <input type="checkbox" checked="{{hideCompleted}}" />
+                  Hide Completed Tasks
+              </label>
+            </div>
+          </div>
+        </div>
 
       {{#if currentUser}}
         <form class="new-task">
