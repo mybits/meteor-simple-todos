@@ -1,68 +1,81 @@
 <head>
   <title>Todo List</title>
+  <link id="favicon" rel="icon" href="favicon.ico?v=3">
 </head>
 
 <body>
-  <div class="container">
-    <header>
-       <div class="panel panel-primary fade-ins">
-          <div class="panel-heading">
-            <div class="panel-title">
-                <h1>Todo List <span class="badge title-badge"> {{incompleteCount}} </span></h1>
-            </div>
-            <div class ="btn btn-normal login-btns">
-                {{> loginButtons}}
-            </div>
-          </div>
-          <div class="panel-body">
-            <div class="checkbox checkbox-primary">
-              <label class="hide-completed">
-                <input type="checkbox" checked="{{hideCompleted}}" />
-                  Hide Completed Tasks
-              </label>
-            </div>
-          </div>
+<div class="container">
+  <header>
+    <div class="panel panel-primary fade-in">
+      <div class="panel-heading">
+        <div class="panel-title">
+          <h1>Todo List <span class="badge title-badge"> {{incompleteCount}} </span></h1>
         </div>
+        <div class ="btn btn-normal login-btns">
+          {{> loginButtons}}
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="checkbox checkbox-primary">
+          <label class="hide-completed">
+            <input type="checkbox" checked="{{hideCompleted}}" />
+              Hide Completed Tasks
+          </label>
+        </div>
+      </div>
 
       {{#if currentUser}}
-        <form class="new-task">
-          <input type="text" name="text" placeholder="Type to add new tasks" />
-        </form>
-      {{/if}}
-    </header>
+        {{#if currentUser}}
 
-    <ul>
+          <form class="new-task">
+            <div class="form-control-wrapper">
+              <input class="form-control empty" name="text" placeholder="Type here to add new task">
+              <span class="material-input"></span>
+            </div>
+          </form>
+
+        {{/if}}
+      {{/if}}
+    </div>
+  </header>
+  <ul>
+    {{#transition}}
       {{#each tasks}}
         {{> task}}
       {{/each}}
-    </ul>
-  </div>
+    {{/transition}}
+  </ul>
+</div>
 </body>
 
 <template name="task">
-  <li class=" well {{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
+  <li class="well fade {{#if checked}}checked{{/if}} {{#if private}}private{{/if}}">
+
     <div>
-      <button class="delete"><i class="mdi-action-delete center"></i></button>
+      <button class="btn btn-default btn-fab btn-raised delete"><i class="mdi-action-delete delete-icon center"></i><span class="ripple-wrapper"></span></button>
     </div>
+      <span class="label label-success">{{username}}</span>
+      <div class="checkbox checkbox-primary">
+        <label>
+          <input type="checkbox" checked="{{checked}}" class="toggle-checked " />
+          <span class="ripple"></span>
+          <span class="check"></span>
+        </label>
 
-    {{#if isOwner}}
-      <button class="btn btn-primary btn-raised btn-xs toggle-private">
-        {{#if private}}
-          Private
-        {{else}}
-          Public
+        {{#if isOwner}}
+           {{#if private}}
+              <button class="btn btn-flat btn-info btn-lg toggle-private">
+                Private
+              </button>
+           {{else}}
+             <button class="btn btn-flat btn-warning btn-lg toggle-private">
+                Public
+              </button>
+           {{/if}}
         {{/if}}
-      </button>
-    {{/if}}
+      </div>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
-        <span class="ripple"></span>
-        <span class="check"></span>
-      </label>
+        <p><span class="text">{{text}}</span></p>
 
-      <span class="text"><strong>{{username}}</strong> - {{text}}</span>
-    </div>
-  </li>
+    </li>
 </template>
